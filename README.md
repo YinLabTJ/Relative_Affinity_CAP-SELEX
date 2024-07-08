@@ -2,9 +2,7 @@
 
 Dependencies:
 
-perl v5.26 or higher verion
-R 4.2.0 or higher version (ggplot2 package required)
-spacek40
+perl v5.26 or higher verion, R 4.2.0 or higher version (ggplot2 package required), spacek40
 
 Examples of analysis workflow:
 1. Create your own Batch file
