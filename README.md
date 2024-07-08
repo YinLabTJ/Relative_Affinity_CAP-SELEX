@@ -8,3 +8,6 @@ Examples of analysis workflow:
 1. Create your own Batch file
 2. Save your sequence file (sequences only, not fastq format) in a directory like SELEX. These files' names should be consisted with the format of your Batch file
 3. pipeline.sh is an example of running the pipeline step by step 
+
+Expected output:
+PDF and PNG files of each pair of Transcription Factors, in output directory.
