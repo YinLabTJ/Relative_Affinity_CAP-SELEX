@@ -3,12 +3,13 @@
 use strict;
 use File::Spec;
 
-die "Usage: perl step2.relative_affinity.pl batch_file TF_pair_and_barcode k_length seq_file_dir monomer_batch_file filter_list_file\n" unless(@ARGV==6);
+die "Usage: perl step2.relative_affinity.pl batch_file TF_pair_and_barcode k_length seq_file_dir filter_list_file\n" unless(@ARGV==5);
 
 my $cwd=File::Spec->rel2abs(__FILE__);
 my ($vol,$dir,$file)=File::Spec->splitpath($cwd);
 
-my $batch_file=shift; my $pair_barcode=shift; my $k=shift; my $seq_file_dir=shift; my $monomer_batch_file=shift; my $filter_list=shift;
+my $batch_file=shift; my $pair_barcode=shift; my $k=shift; my $seq_file_dir=shift; my $filter_list=shift;
+my $monomer_batch_file="$dir/../data/Curated_Prey_Final.txt";
 my %single_c; my %single_t; my %pair_c; my %pair_t;
 
 my @p=split /_/,$pair_barcode;
@@ -19,7 +20,8 @@ while(<IN>){
 	chomp;
 	my @t=split;
 	if("$t[0]_$t[1]" eq $pair_barcode && $t[7]=~/Type/){
-		die "Individual motifs of TFs: $t[0] are too similiar.\n";
+		my @tf_name=split /_/,$t[0];
+		die "Enriched k-mers in HT-SELEX $tf_name[0] or $tf_name[1] are not enriched in CAP-SELEX $t[0] according to spacek40 output.\n";
 	}
 }
 close IN; close OUT;
@@ -53,17 +55,17 @@ for(my $i=0;$i<$max;$i++){
 }
 
 open OUT,">output/$pair_barcode/relative_affinity_xyplot.input";
-print OUT "CAP_SELEX\tHT_SELEX\tClass\n";
+print OUT "CAP_SELEX\tHT_SELEX\tClass\t10-mer\n";
 
 open IN,"$monomer_batch_file";
 while(<IN>){
 	chomp;
 	my @t=split;
 	my @t2=split /_/,$t[0];
-	$single_c{$t2[0]}="$seq_file_dir/$t[1]0_sig.seq";
+	$single_c{$t2[0]}="$seq_file_dir/$t[1]0u_sig.seq";
 	$single_t{$t2[0]}="$seq_file_dir/$t[1]$t[2]$t[3]_sig.seq";
 	if(@t2>1){
-		$single_c{$t2[1]}="$seq_file_dir/$t[4]0_sig.seq";
+		$single_c{$t2[1]}="$seq_file_dir/$t[4]0u_sig.seq";
 		$single_t{$t2[1]}="$seq_file_dir/$t[4]$t[5]$t[6]_sig.seq";
 	}
 }
@@ -88,7 +90,7 @@ while(<IN>){
 	}
 
 	next unless($combine eq $pair_barcode);
-	$pair_c{$combine}="$seq_file_dir/$t[2]0_sig.seq";
+	$pair_c{$combine}="$seq_file_dir/$t[2]0u_sig.seq";
 	$pair_t{$combine}="$seq_file_dir/$t[2]$t[3]3u_sig.seq";
 	$spacek_out=$pair_barcode.$t[3].".out";
 
@@ -125,7 +127,6 @@ while(<IN>){
 		$pair_rel_aff{$key}=(($tf1tf2_t{$key}/$tf1tf2_top_t)/($tf1tf2_c{$key}/$tf1tf2_top_c))**(1/$cycle_num);
 		$tf1_rel_aff{$key}=(($tf1_t{$key}/$tf1_top_t)/($tf1_c{$key}/$tf1_top_c))**(1/$cycle_num);
 		$tf2_rel_aff{$key}=(($tf2_t{$key}/$tf2_top_t)/($tf2_c{$key}/$tf2_top_c))**(1/$cycle_num);
-
 
 		if($tf1_rel_aff{$key}>$tf2_rel_aff{$key}){
 			$distance_to_x_equal_y2{$key}=($pair_rel_aff{$key}-$tf1_rel_aff{$key})/(2**0.5);
@@ -173,12 +174,12 @@ foreach my $key(sort keys %pair_rel_aff){
 		$higher_monomer_ra=$tf2_rel_aff{$key};
 	}
 	if(defined($top100{$key})){
-		print OUT "$pair_rel_aff{$key}\t$higher_monomer_ra\tTop100\n";
+		print OUT "$pair_rel_aff{$key}\t$higher_monomer_ra\tTop100\t$key\n";
 	}else{
-		print OUT "$pair_rel_aff{$key}\t$higher_monomer_ra\t$higher_monomer{$key}\n";
+		print OUT "$pair_rel_aff{$key}\t$higher_monomer_ra\t$higher_monomer{$key}\t$key\n";
 	}
 	if(defined($local_max{$key})){
-		print OUT "$pair_rel_aff{$key}\t$higher_monomer_ra\tlocal_max\n";
+		print OUT "$pair_rel_aff{$key}\t$higher_monomer_ra\tlocal_max\t$key\n";
 	}	
 }
 

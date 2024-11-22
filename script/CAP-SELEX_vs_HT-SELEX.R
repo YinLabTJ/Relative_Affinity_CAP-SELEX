@@ -19,7 +19,7 @@ p<-ggplot(data=dat)+geom_hline(aes(yintercept=0),size=0.2)+geom_vline(aes(xinter
 ver <- data.frame(x=c(0,0,0,0,0,0,0,1),y=c(0,0,0,0,0,0,0,1))
 p + geom_segment(data=ver,aes(x=c(0,0,0,0,1,0.75,0.5,0.25),y=c(1,0.75,0.5,0.25,0,0,0,0),xend=c(-0.01,-0.01,-0.01,-0.01,1,0.75,0.5,0.25),yend=c(1,0.75,0.5,0.25,-0.01,-0.01,-0.01,-0.01)),size=0.2)
 #p + labs(title = args[1])
-png(file=outfile)
+png(file=outfile,width=2000,height=2000,res=300)
 print(p)
 dev.off()
 

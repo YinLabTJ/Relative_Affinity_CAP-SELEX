@@ -1,10 +1,15 @@
 #!/usr/bin/perl
 #Running spacek40 for local_max information
 use strict;
+use File::Spec;
+my $cwd=File::Spec->rel2abs(__FILE__);
+my ($vol,$shdir,$file)=File::Spec->splitpath($cwd);
 
-die "Usage: perl step1_spacek40.pl batch_file seq_files_dir individual_TF_batch_file\n\tnames of sequence files should be consistent with Batch_file\n" unless(@ARGV==3);
+die "Usage: perl step1_spacek40.pl batch_file seq_files_dir\n\tnames of sequence files should be consistent with Batch_file\n" unless(@ARGV==2);
 
-my $batch_file=shift; my $seq_file_dir=shift; my $monomer_batch_file=shift;
+my $batch_file=shift; my $seq_file_dir=shift; 
+my $monomer_batch_file="$shdir/../data/Curated_Prey_Final.txt"; #information of individual TFs
+
 my %barcode; my %barcodes; my %tf;
 
 #Loading HT-SELEX information
