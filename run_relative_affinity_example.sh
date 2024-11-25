@@ -3,9 +3,9 @@
 # An example of computing relative affinity for our published CAP-SELEX matrices
 # To run this pipeline, you need a batch file with TF_pairs information (File Batch_test is an example)and a folder (e.g. ./SELEX) that stores sequence file
 # The sequence files should contain DNA sequence only, not fastq format. And the name of the sequence files should be consistent with the batch file.
-# Take "Batch_test.txt" and folder “SELEX" as a example
+# Take "Batch_test.txt" and folder “SELEX" as an example
 
-export PATH="/data/software/relative_affinity/upload_pipeline_v2:$PATH"  #spacek40 path
+#export PATH="/data/software/Relative_Affinity_CAP-SELEX:$PATH"  #spacek40 path
 
 #1. run spacek40 for local_max information
 perl script/step1_spacek40.pl Batch_test.txt SELEX
